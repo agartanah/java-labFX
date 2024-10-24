@@ -2,10 +2,7 @@ package org.example.javalabfx.restaurant;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -20,9 +17,13 @@ public class RestaurantOrder {
     static final CheckBox[] dishCheckBoxes = new CheckBox[dishes.size()];
     static final TextField[] dishCountFields = new TextField[dishes.size()];
 
-    public static void start(Stage stage, Stage prevStage) {
-        VBox dishesContainer = new VBox(10);
+    static final Button backButton = new Button("Назад");
+    static final Button orderButton = new Button("Заказать");
 
+    static final VBox dishesContainer = new VBox(10);
+    static final VBox root = new VBox(20, backButton, dishesContainer, orderButton);
+
+    public static void start(Stage stage, Stage prevStage) {
         for (int index = 0; index < dishes.size(); ++index) {
             CheckBox dishTitle = new CheckBox(dishes.get(index).getTitle());
             Label dishPrice = new Label("Цена: " + dishes.get(index).getPrice());
@@ -46,22 +47,35 @@ public class RestaurantOrder {
             dishesContainer.getChildren().add(dishContainer);
         }
 
-        Button orderButton = new Button("Заказать");
         orderButton.setOnAction(event -> {
+            try {
+                createOrder();
+            } catch (Exception exception) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Введите число!");
+                alert.setHeaderText(null);
+                alert.setContentText("Поле количества либо пустое, либо не является числом!");
+                alert.showAndWait();
+
+                return;
+            }
+
+            if (order.getPositions().isEmpty()) {
+                return;
+            }
+
             showReceipt();
         });
 
-        Button backButton = new Button("Назад");
         backButton.setOnAction(actionEvent -> {
             stage.close();
             prevStage.show();
         });
 
-        VBox root = new VBox(20, backButton, dishesContainer, orderButton);
         root.setAlignment(Pos.CENTER_LEFT);
         root.setStyle("-fx-padding: 20px;");
 
-        Scene scene = new Scene(root, 400, 400);
+        Scene scene = new Scene(root, 700, 400);
         stage.setTitle("Заказ в ресторане");
         stage.setScene(scene);
         stage.show();
@@ -79,6 +93,14 @@ public class RestaurantOrder {
         return dishes;
     }
 
+    private static void createOrder() {
+        for (int index = 0; index < dishes.size(); ++index) {
+            if (dishCheckBoxes[index].isSelected()) {
+                order.addPosition(dishes.get(index), Integer.parseInt(dishCountFields[index].getText()));
+            }
+        }
+    }
+
     // Метод для отображения чека в модальном окне
     private static void showReceipt() {
         Stage receiptStage = new Stage();
@@ -86,19 +108,12 @@ public class RestaurantOrder {
 
         VBox receiptContainer = new VBox(10);
 
-        double totalCost = 0;
-        for (int index = 0; index < dishes.size(); ++index) {
-            if (dishCheckBoxes[index].isSelected()) {
-                int quantity = Integer.parseInt(dishCountFields[index].getText());
-                double dishTotal = quantity * dishes.get(index).getPrice();
-                totalCost += dishTotal;
-
-                Label dishInfo = new Label(dishes.get(index).getTitle() + " — Количество: " + quantity + ", Итоговая стоимость: " + dishTotal + " руб.");
-                receiptContainer.getChildren().add(dishInfo);
-            }
+        for (Position pos : order.getPositions()) {
+            Label positionInfo = new Label(pos.getDish().getTitle() + " — Количество: " + pos.getCount() + ", Итоговая стоимость: " + pos.getTotalPrice() + " руб.");
+            receiptContainer.getChildren().add(positionInfo);
         }
 
-        Label totalLabel = new Label("Общая стоимость заказа: " + totalCost + " руб.");
+        Label totalLabel = new Label("Общая стоимость заказа: " + order.getTotalPrice() + " руб.");
 
         receiptContainer.getChildren().add(totalLabel);
 
@@ -107,7 +122,7 @@ public class RestaurantOrder {
 
         receiptContainer.getChildren().add(closeButton);
 
-        Scene receiptScene = new Scene(receiptContainer, 300, 300);
+        Scene receiptScene = new Scene(receiptContainer, 500, 300);
         receiptStage.setScene(receiptScene);
         receiptStage.setTitle("Чек");
         receiptStage.showAndWait();

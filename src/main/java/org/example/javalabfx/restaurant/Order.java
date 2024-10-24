@@ -1,21 +1,32 @@
 package org.example.javalabfx.restaurant;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Order {
-    private final Map<Dish, Integer> dishes = new HashMap<>();
+    private final List<Position> dishes = new LinkedList<>();
+    private Double totalPrice = 0d;
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
 
     public Order() { }
 
-    public Map<Dish, Integer> getOrder() {
+    public List<Position> getPositions() {
         return dishes;
     }
 
-    public boolean addDish(Dish dish, Integer count) {
-        dishes.put(dish, count);
+    public boolean addPosition(Dish dish, Integer count) {
+        dishes.add(new Position(dish, count));
+        totalPrice += dish.getPrice() * count;
+
+        return true;
+    }
+
+    public boolean addPositions(List<Position> positions) {
+        dishes.addAll(positions);
+        recalcTotalOrderPrice();
 
         return true;
     }
@@ -26,4 +37,13 @@ public class Order {
         return true;
     }
 
+    private boolean recalcTotalOrderPrice() {
+        totalPrice = 0d;
+
+        for (Position pos : dishes) {
+            totalPrice += pos.getTotalPrice();
+        }
+
+        return true;
+    }
 }
