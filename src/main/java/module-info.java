@@ -5,4 +5,6 @@ module org.example.javalabfx {
 
     opens org.example.javalabfx to javafx.fxml;
     exports org.example.javalabfx;
+    exports org.example.javalabfx.restaurant;
+    opens org.example.javalabfx.restaurant to javafx.fxml;
 }
