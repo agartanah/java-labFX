@@ -9,15 +9,15 @@ import javafx.stage.Stage;
 
 public class Shifter {
     private static boolean isForward = true;  // Флаг направления стрелки
+    static final TextField textField1 = new TextField();
+    static final TextField textField2 = new TextField();
+
+    static final Button switchButton = new Button("→");
+    static final Button backButton = new Button("Назад");
+
+    static final BorderPane switchButtonContainer = new BorderPane();
 
     public static void start(Stage stage, Stage prevStage) {
-        TextField textField1 = new TextField();
-        TextField textField2 = new TextField();
-
-        Button switchButton = new Button("→");
-        Button backButton = new Button("Назад");
-
-        BorderPane switchButtonContainer = new BorderPane();
         switchButtonContainer.setCenter(switchButton);
 
         switchButton.setOnAction(actionEvent -> {
@@ -41,14 +41,9 @@ public class Shifter {
             prevStage.show();
         });
 
-
-        // Размещаем элементы на форме
         VBox root = new VBox(10, backButton, textField1, switchButtonContainer, textField2);
 
-        // Создаем сцену
         Scene scene = new Scene(root, 300, 300);
-
-        // Настраиваем и показываем окно
         stage.setTitle("Word Switcher");
         stage.setScene(scene);
         stage.show();
