@@ -20,6 +20,8 @@ public class Shifter {
     public static void start(Stage stage, Stage prevStage) {
         switchButtonContainer.setCenter(switchButton);
 
+        switchButton.setRotate(90);
+
         switchButton.setOnAction(actionEvent -> {
             if (isForward) {
                 textField2.setText(textField1.getText());
