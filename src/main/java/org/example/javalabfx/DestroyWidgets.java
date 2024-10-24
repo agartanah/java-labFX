@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -37,7 +38,10 @@ public class DestroyWidgets {
         VBox widgetsContainer = new VBox(10, textField1, textField2, textField3);
         VBox checkBoxContainer = new VBox(20, checkBoxTextField1, checkBoxTextField2, checkBoxTextField3);
 
-        HBox mainContainer = new HBox(20, checkBoxContainer, widgetsContainer);
+        HBox content = new HBox(20, checkBoxContainer, widgetsContainer);
+        content.setAlignment(Pos.CENTER);
+
+        VBox mainContainer = new VBox(20, backButton, content);
         mainContainer.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(mainContainer, 400, 200);

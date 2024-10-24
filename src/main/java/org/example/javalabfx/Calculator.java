@@ -83,7 +83,7 @@ public class Calculator {
         mainContainer.setStyle("-fx-padding: 20px;");
         mainContainer.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(mainContainer, 270, 250);
+        Scene scene = new Scene(mainContainer, 260, 300);
         stage.setScene(scene);
         stage.setTitle("КАЛькулятор");
         stage.show();
